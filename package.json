@@ -1,0 +1,29 @@
+{
+  "name": "pruebastecnicas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abizmo/pruebas-tecnicas.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abizmo/pruebas-tecnicas/issues"
+  },
+  "homepage": "https://github.com/abizmo/pruebas-tecnicas#readme",
+  "workspaces": [
+    "projects/*"
+  ],
+  "devDependencies": {
+    "standard": "^17.1.0"
+  },
+  "eslintConfig": {
+    "extends": "./node_modules/standard/eslintrc.json"
+  }
+}
