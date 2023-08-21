@@ -16,6 +16,8 @@ function App() {
 
   const toggleColorful = () => setColorful(!colorful)
   const toggleCountrySorting = () => setCountrySorting(!countrySorting)
+  const deleteUser = (email: string) =>
+    setUsers(users.filter(user => user.email !== email))
 
   const usersToShow = countrySorting
     ? [...users].sort((a, b) =>
@@ -54,7 +56,9 @@ function App() {
                 <td>{user.name.last}</td>
                 <td>{user.location.country}</td>
                 <td>
-                  <button type='button'>Borrar</button>
+                  <button type='button' onClick={() => deleteUser(user.email)}>
+                    Borrar
+                  </button>
                 </td>
               </tr>
             ))}
