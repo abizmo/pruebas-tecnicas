@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { type User } from './types.d'
 
@@ -6,11 +6,15 @@ function App() {
   const [users, setUsers] = useState<User[]>([])
   const [colorful, setColorful] = useState(false)
   const [countrySorting, setCountrySorting] = useState(false)
+  const originalUsers = useRef<User[]>([])
 
   useEffect(() => {
     fetch('https://randomuser.me/api/?results=100')
       .then(res => res.json())
-      .then(({ results }) => setUsers(results))
+      .then(({ results }) => {
+        setUsers(results)
+        originalUsers.current = results
+      })
       .catch(error => console.error(error))
   }, [])
 
@@ -19,11 +23,14 @@ function App() {
   const deleteUser = (email: string) =>
     setUsers(users.filter(user => user.email !== email))
 
+  const restoreUsers = () => setUsers(originalUsers.current)
+
   const usersToShow = countrySorting
     ? [...users].sort((a, b) =>
         a.location.country.localeCompare(b.location.country)
       )
     : users
+
   return (
     <>
       <header>
@@ -33,6 +40,7 @@ function App() {
           <button onClick={toggleCountrySorting}>
             {countrySorting ? 'No ordenar por país' : 'Ordenar por país'}
           </button>
+          <button onClick={restoreUsers}>Resetear usuarios</button>
         </div>
       </header>
       <main>
