@@ -4,21 +4,27 @@ import { type User } from './types.d'
 
 function App() {
   const [users, setUsers] = useState<User[]>([])
+  const [colorful, setColorful] = useState(false)
 
   useEffect(() => {
     fetch('https://randomuser.me/api/?results=100')
-      .then((res) => res.json())
+      .then(res => res.json())
       .then(({ results }) => setUsers(results))
-      .catch((error) => console.error(error))
+      .catch(error => console.error(error))
   }, [])
+
+  const toggleColorful = () => setColorful(!colorful)
 
   return (
     <>
       <header>
         <h1>Prueba técnica</h1>
+        <div>
+          <button onClick={toggleColorful}>Colorear filas</button>
+        </div>
       </header>
       <main>
-        <table>
+        <table className={colorful ? 'table--colorful' : ''}>
           <thead>
             <tr>
               <th>Foto</th>
@@ -29,7 +35,7 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {users.map(user => (
               <tr key={user.email}>
                 <td>
                   <img src={user.picture.thumbnail} alt={user.name.first} />
