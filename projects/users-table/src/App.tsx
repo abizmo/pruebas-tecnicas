@@ -5,6 +5,7 @@ import { type User } from './types.d'
 function App() {
   const [users, setUsers] = useState<User[]>([])
   const [colorful, setColorful] = useState(false)
+  const [countrySorting, setCountrySorting] = useState(false)
 
   useEffect(() => {
     fetch('https://randomuser.me/api/?results=100')
@@ -14,13 +15,22 @@ function App() {
   }, [])
 
   const toggleColorful = () => setColorful(!colorful)
+  const toggleCountrySorting = () => setCountrySorting(!countrySorting)
 
+  const usersToShow = countrySorting
+    ? [...users].sort((a, b) =>
+        a.location.country.localeCompare(b.location.country)
+      )
+    : users
   return (
     <>
       <header>
         <h1>Prueba técnica</h1>
         <div>
           <button onClick={toggleColorful}>Colorear filas</button>
+          <button onClick={toggleCountrySorting}>
+            {countrySorting ? 'No ordenar por país' : 'Ordenar por país'}
+          </button>
         </div>
       </header>
       <main>
@@ -35,7 +45,7 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {users.map(user => (
+            {usersToShow.map(user => (
               <tr key={user.email}>
                 <td>
                   <img src={user.picture.thumbnail} alt={user.name.first} />
