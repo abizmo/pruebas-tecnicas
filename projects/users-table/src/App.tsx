@@ -1,4 +1,11 @@
-import { type ChangeEvent, useEffect, useRef, useState } from 'react'
+import {
+  type ChangeEvent,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useCallback
+} from 'react'
 import './App.css'
 import { type User } from './types.d'
 
@@ -13,6 +20,7 @@ function App() {
     fetch('https://randomuser.me/api/?results=100')
       .then(res => res.json())
       .then(({ results }) => {
+        console.log('setUsers')
         setUsers(results)
         originalUsers.current = results
       })
@@ -32,19 +40,36 @@ function App() {
 
   const restoreUsers = () => setUsers(originalUsers.current)
 
-  const usersFiltered = countryFilter
-    ? users.filter(user =>
-        user.location.country
-          .toLowerCase()
-          .includes(countryFilter.toLowerCase())
-      )
-    : users
+  const filterByCountry = (users: User[]) => {
+    console.log('filterByCountry')
 
-  const usersToShow = countrySorting
-    ? [...usersFiltered].sort((a, b) =>
-        a.location.country.localeCompare(b.location.country)
-      )
-    : usersFiltered
+    return countryFilter
+      ? users.filter(user =>
+          user.location.country
+            .toLocaleLowerCase()
+            .includes(countryFilter.toLocaleLowerCase())
+        )
+      : users
+  }
+
+  const sortByCountry = (users: User[]) => {
+    console.log('sortByCountry')
+    return countrySorting
+      ? [...users].sort((a, b) =>
+          a.location.country.localeCompare(b.location.country)
+        )
+      : users
+  }
+
+  const usersSorted = useMemo(
+    () => sortByCountry(users),
+    [countrySorting, users]
+  )
+
+  const usersFiltered = useMemo(
+    () => filterByCountry(usersSorted),
+    [countryFilter, users, usersSorted]
+  )
 
   return (
     <>
@@ -76,7 +101,7 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {usersToShow.map(user => (
+            {usersFiltered.map(user => (
               <tr key={user.email}>
                 <td>
                   <img src={user.picture.thumbnail} alt={user.name.first} />
